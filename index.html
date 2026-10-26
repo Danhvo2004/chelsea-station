@@ -1,14 +1,632 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Chelsea Station</title>
+  <meta name="theme-color" content="#07162f">
+  <meta name="description" content="Chelsea Station — danh mục thăm dò các ý tưởng sản phẩm dành cho cộng đồng fan Chelsea.">
+  <title>Chelsea Station — For the fans</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #07162f;
+      --navy-2: #0d2344;
+      --blue: #0753b8;
+      --blue-bright: #1b73e8;
+      --gold: #f3c969;
+      --paper: #f6f7fb;
+      --white: #fff;
+      --ink: #101b2d;
+      --muted: #68758a;
+      --line: #dfe5ef;
+      --radius: 22px;
+      --shadow: 0 18px 50px rgba(6, 21, 47, .10);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); }
+    a { color: inherit; }
+    button, input, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
+    .skip-link {
+      position: absolute; left: 12px; top: -60px; z-index: 20;
+      background: var(--white); color: var(--navy); padding: 12px 16px; border-radius: 10px;
+    }
+    .skip-link:focus { top: 12px; }
+    .announcement {
+      min-height: 34px; display: flex; align-items: center; justify-content: center;
+      padding: 7px 16px; background: var(--gold); color: var(--navy);
+      text-align: center; font-size: 11px; font-weight: 850; letter-spacing: .1em;
+    }
+    .site-header {
+      position: sticky; top: 0; z-index: 10; background: rgba(7, 22, 47, .97);
+      color: var(--white); border-bottom: 1px solid rgba(255,255,255,.1);
+      backdrop-filter: blur(12px);
+    }
+    .header-inner {
+      width: min(1120px, calc(100% - 36px)); min-height: 72px; margin: auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; }
+    .brand-mark {
+      width: 38px; height: 38px; display: grid; place-items: center; border-radius: 13px;
+      color: var(--navy); background: var(--gold); font-size: 13px; font-weight: 950; letter-spacing: -.06em;
+    }
+    .brand-name { font-size: 15px; line-height: 1; font-weight: 850; letter-spacing: .04em; }
+    .brand-sub { display: block; margin-top: 5px; color: #a9bad3; font-size: 9px; letter-spacing: .18em; }
+    .nav-links { display: flex; align-items: center; gap: 27px; }
+    .nav-links a {
+      color: #d2dbea; text-decoration: none; font-size: 13px; font-weight: 650;
+      transition: color .18s ease;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta, .button {
+      display: inline-flex; justify-content: center; align-items: center; gap: 9px;
+      min-height: 46px; padding: 0 18px; border: 0; border-radius: 999px;
+      background: var(--gold); color: var(--navy); text-decoration: none;
+      font-weight: 850; font-size: 13px; cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .nav-cta { min-height: 40px; padding: 0 15px; font-size: 12px; }
+    .button:hover, .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 9px 24px rgba(243,201,105,.23); }
+    .button-blue { background: var(--blue); color: var(--white); }
+    .button-blue:hover { background: var(--blue-bright); box-shadow: 0 9px 24px rgba(27,115,232,.25); }
+    .button-quiet { border: 1px solid rgba(255,255,255,.36); background: transparent; color: var(--white); }
+    .button-quiet:hover { background: rgba(255,255,255,.09); }
+    .hero {
+      position: relative; overflow: hidden; color: var(--white);
+      background:
+        radial-gradient(ellipse at 85% 45%, rgba(27,115,232,.35), transparent 38%),
+        radial-gradient(ellipse at 15% 100%, rgba(7,83,184,.35), transparent 45%),
+        linear-gradient(125deg, #07162f 8%, #0b1f3e 58%, #092b5a 100%);
+    }
+    .hero::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .17;
+      background-image: radial-gradient(rgba(255,255,255,.55) .7px, transparent .7px);
+      background-size: 22px 22px; mask-image: linear-gradient(90deg, black, transparent 85%);
+    }
+    .hero-inner {
+      position: relative; width: min(1120px, calc(100% - 36px)); min-height: 540px;
+      margin: auto; display: grid; grid-template-columns: 1.04fr .96fr;
+      align-items: center; gap: 34px; padding: 64px 0 72px;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; color: var(--gold);
+      font-size: 11px; font-weight: 850; letter-spacing: .17em; text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 21px; height: 2px; background: currentColor; }
+    h1 {
+      max-width: 650px; margin: 20px 0 18px; font-size: clamp(42px, 6vw, 72px);
+      line-height: .99; letter-spacing: -.055em; font-weight: 900;
+    }
+    h1 em { color: var(--gold); font-style: normal; }
+    .hero-copy { max-width: 510px; margin: 0; color: #c5d0e0; font-size: 16px; line-height: 1.75; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 28px; }
+    .hero-small { margin-top: 18px; color: #98abc5; font-size: 11px; line-height: 1.6; }
+    .hero-art {
+      min-height: 370px; position: relative; display: grid; place-items: center;
+      isolation: isolate;
+    }
+    .art-orbit {
+      position: absolute; width: min(390px, 82vw); aspect-ratio: 1; border: 1px solid rgba(255,255,255,.16);
+      border-radius: 50%; transform: rotate(-18deg);
+    }
+    .art-orbit::before, .art-orbit::after {
+      content: ""; position: absolute; inset: 24px; border: 1px solid rgba(255,255,255,.11); border-radius: 50%;
+    }
+    .art-orbit::after { inset: 49px; border-color: rgba(243,201,105,.17); }
+    .art-card {
+      position: relative; width: min(300px, 72vw); aspect-ratio: .79; border: 1px solid rgba(255,255,255,.22);
+      border-radius: 32px; overflow: hidden; transform: rotate(5deg);
+      background: linear-gradient(145deg, rgba(27,115,232,.9), rgba(4,44,103,.98) 58%, rgba(7,22,47,.98));
+      box-shadow: 0 32px 80px rgba(0,0,0,.38), inset 0 1px rgba(255,255,255,.17);
+    }
+    .art-card::before {
+      content: ""; position: absolute; width: 260px; height: 260px; right: -80px; top: -50px;
+      border: 1px solid rgba(255,255,255,.22); border-radius: 50%;
+      box-shadow: 0 0 0 20px rgba(255,255,255,.035), 0 0 0 42px rgba(255,255,255,.035);
+    }
+    .art-card::after {
+      content: ""; position: absolute; left: -60px; bottom: -100px; width: 250px; height: 250px;
+      border-radius: 50%; background: radial-gradient(circle, rgba(243,201,105,.38), transparent 70%);
+    }
+    .art-card-content { position: absolute; inset: auto 24px 25px; z-index: 1; }
+    .art-label { color: #dce8f8; font-size: 10px; font-weight: 850; letter-spacing: .2em; }
+    .art-title { margin-top: 9px; color: var(--white); font-size: 37px; line-height: .95; font-weight: 950; letter-spacing: -.06em; }
+    .art-caption {
+      position: absolute; right: 20px; top: 22px; z-index: 1; padding: 8px 10px;
+      border: 1px solid rgba(255,255,255,.36); border-radius: 999px;
+      color: var(--white); background: rgba(7,22,47,.33); font-size: 9px; font-weight: 850; letter-spacing: .12em;
+    }
+    .floating-note {
+      position: absolute; z-index: 2; right: 0; bottom: 38px; padding: 13px 16px;
+      border: 1px solid rgba(255,255,255,.18); border-radius: 16px; background: rgba(8,25,51,.83);
+      box-shadow: 0 14px 36px rgba(0,0,0,.25); color: #dce5f2; font-size: 11px; line-height: 1.5;
+    }
+    .floating-note strong { display: block; color: var(--gold); font-size: 12px; }
+    .proof-row { background: var(--white); border-bottom: 1px solid var(--line); }
+    .proof-inner {
+      width: min(1120px, calc(100% - 36px)); min-height: 82px; margin: auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); align-items: center;
+    }
+    .proof-item { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 12px; }
+    .proof-item + .proof-item { border-left: 1px solid var(--line); }
+    .proof-icon { color: var(--blue); font-size: 17px; font-weight: 900; }
+    .proof-copy { font-size: 12px; font-weight: 800; }
+    .proof-copy small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; font-weight: 550; }
+    .section { width: min(1120px, calc(100% - 36px)); margin: auto; padding: 88px 0; }
+    .section-heading { max-width: 650px; margin-bottom: 27px; }
+    .section-kicker { color: var(--blue); font-size: 11px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
+    h2 { margin: 10px 0 11px; color: var(--navy); font-size: clamp(29px, 4vw, 43px); line-height: 1.08; letter-spacing: -.045em; }
+    .section-intro { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.75; }
+    .filter-row { display: flex; gap: 8px; overflow-x: auto; padding: 3px 2px 12px; margin-bottom: 15px; scrollbar-width: thin; }
+    .filter-button {
+      flex: 0 0 auto; min-height: 40px; padding: 0 15px; border: 1px solid var(--line);
+      border-radius: 999px; background: var(--white); color: #44516a; font-size: 12px; font-weight: 750; cursor: pointer;
+    }
+    .filter-button[aria-pressed="true"] { color: var(--white); border-color: var(--navy); background: var(--navy); }
+    .product-count { min-height: 20px; margin: 0 0 15px; color: var(--muted); font-size: 11px; }
+    .product-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
+    .product-card {
+      overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white);
+      box-shadow: 0 6px 22px rgba(10,28,56,.035); transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .product-media {
+      position: relative; display: grid; place-items: center; aspect-ratio: 1.4;
+      overflow: hidden; background:
+        radial-gradient(circle at 80% 18%, rgba(243,201,105,.24), transparent 32%),
+        linear-gradient(135deg, #e7effb, #d5e4f8 57%, #edf1f8);
+    }
+    .product-media img { width: 100%; height: 100%; object-fit: cover; }
+    .product-art { width: 90px; height: 90px; display: grid; place-items: center; color: var(--blue); }
+    .product-art svg { width: 100%; height: 100%; overflow: visible; }
+    .demo-ribbon {
+      position: absolute; left: 12px; top: 12px; padding: 6px 9px; border-radius: 999px;
+      background: rgba(7,22,47,.84); color: var(--white); font-size: 9px; font-weight: 850; letter-spacing: .1em;
+    }
+    .product-body { padding: 16px 17px 18px; }
+    .product-category { color: var(--blue); font-size: 10px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    .product-body h3 { margin: 8px 0 7px; color: var(--navy); font-size: 17px; letter-spacing: -.025em; }
+    .product-description { min-height: 40px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+    .product-meta {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      margin-top: 14px; padding-top: 13px; border-top: 1px solid #edf0f5;
+    }
+    .price-note { color: #596780; font-size: 10px; font-weight: 700; }
+    .interest-button {
+      min-height: 36px; padding: 0 11px; border: 0; border-radius: 999px;
+      background: #eaf2ff; color: var(--blue); font-size: 10px; font-weight: 850; cursor: pointer;
+    }
+    .interest-button:hover { background: var(--blue); color: var(--white); }
+    .notice-card {
+      display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start;
+      margin-top: 24px; padding: 18px 20px; border: 1px solid #ead9a9; border-radius: 16px;
+      background: #fff9e8; color: #554514; font-size: 12px; line-height: 1.7;
+    }
+    .notice-symbol { font-size: 18px; line-height: 1.2; }
+    .notice-card strong { color: #40330c; }
+    .request-section {
+      background:
+        radial-gradient(ellipse at 90% 0%, rgba(27,115,232,.18), transparent 38%),
+        linear-gradient(135deg, #07162f, #0b2346);
+      color: var(--white);
+    }
+    .request-inner { width: min(1120px, calc(100% - 36px)); margin: auto; padding: 82px 0; }
+    .request-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 42px; align-items: start; }
+    .request-copy h2 { color: var(--white); }
+    .request-copy .section-intro { color: #bcc9db; }
+    .request-points { display: grid; gap: 12px; margin: 23px 0 0; padding: 0; list-style: none; }
+    .request-points li { display: flex; gap: 9px; color: #d6dfec; font-size: 12px; line-height: 1.6; }
+    .request-points li::before { content: "✓"; color: var(--gold); font-weight: 900; }
+    .form-card { padding: 25px; border: 1px solid rgba(255,255,255,.16); border-radius: 24px; background: #fff; color: var(--ink); box-shadow: 0 25px 70px rgba(0,0,0,.2); }
+    .form-card h3 { margin: 0 0 6px; color: var(--navy); font-size: 21px; letter-spacing: -.03em; }
+    .form-lead { margin: 0 0 17px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .connection-status {
+      margin: 0 0 20px; padding: 11px 12px; border: 1px solid #e8d59a; border-radius: 12px;
+      background: #fff8e6; color: #5e4c17; font-size: 11px; line-height: 1.6;
+    }
+    .connection-status strong { display: block; margin-bottom: 2px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field { display: grid; gap: 6px; }
+    .field-full { grid-column: 1 / -1; }
+    .field label { color: #29364b; font-size: 11px; font-weight: 800; }
+    .field input, .field select {
+      width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #d9e0ea;
+      border-radius: 10px; background: #fff; color: var(--ink); font-size: 13px;
+    }
+    .field input::placeholder { color: #9aa5b5; }
+    .consent-row { display: flex; align-items: flex-start; gap: 9px; margin: 16px 0 14px; color: #58657a; font-size: 10px; line-height: 1.55; }
+    .consent-row input { width: 16px; height: 16px; flex: 0 0 16px; margin: 1px 0 0; accent-color: var(--blue); }
+    .form-submit { width: 100%; min-height: 47px; }
+    .form-status { min-height: 20px; margin: 11px 0 0; color: #52617a; font-size: 10px; line-height: 1.6; }
+    .form-footnote { margin: 14px 0 0; color: #79869a; font-size: 9px; line-height: 1.6; }
+    .about-section { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    .about-card, .faq-card { padding: 24px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); }
+    .about-card h3, .faq-card h3 { margin: 0 0 10px; color: var(--navy); font-size: 18px; }
+    .about-card p, .faq-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.75; }
+    .faq-card p + p { margin-top: 12px; }
+    .site-footer { padding: 27px 18px; background: #050f22; color: #b8c4d7; text-align: center; }
+    .footer-brand { color: var(--white); font-size: 13px; font-weight: 850; letter-spacing: .08em; }
+    .footer-note { max-width: 760px; margin: 9px auto 0; font-size: 10px; line-height: 1.7; }
+    .copyright { margin-top: 13px; color: #7787a0; font-size: 9px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media (max-width: 800px) {
+      .hero-inner { min-height: auto; grid-template-columns: 1.1fr .9fr; gap: 12px; padding: 56px 0 58px; }
+      .hero-art { min-height: 320px; }
+      .art-card { width: min(245px, 35vw); }
+      .art-title { font-size: 31px; }
+      .floating-note { right: -5px; bottom: 20px; }
+      .product-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .request-layout { grid-template-columns: 1fr; gap: 27px; }
+      .request-inner { padding: 68px 0; }
+    }
+    @media (max-width: 600px) {
+      :root { scroll-padding-top: 75px; }
+      .announcement { font-size: 9px; letter-spacing: .07em; }
+      .header-inner { width: min(100% - 28px, 1120px); min-height: 64px; }
+      .nav-links { display: none; }
+      .nav-cta { min-height: 38px; padding: 0 12px; font-size: 10px; }
+      .hero-inner { width: min(100% - 30px, 1120px); grid-template-columns: 1fr; padding: 44px 0 30px; }
+      .hero-copy { font-size: 14px; }
+      .hero-art { min-height: 275px; margin-top: 2px; }
+      .art-card { width: 196px; }
+      .art-orbit { width: 275px; }
+      .floating-note { right: calc(50% - 150px); bottom: 4px; }
+      .hero-small { font-size: 10px; }
+      .proof-inner { width: min(100% - 22px, 1120px); min-height: 72px; }
+      .proof-item { gap: 6px; padding: 10px 5px; }
+      .proof-icon { font-size: 14px; }
+      .proof-copy { font-size: 9px; }
+      .proof-copy small { font-size: 8px; }
+      .section { width: min(100% - 30px, 1120px); padding: 64px 0; }
+      .product-grid { gap: 10px; }
+      .product-card { border-radius: 16px; }
+      .product-body { padding: 12px; }
+      .product-body h3 { font-size: 14px; }
+      .product-description { min-height: 54px; font-size: 10px; }
+      .product-meta { align-items: flex-start; flex-direction: column; }
+      .interest-button { width: 100%; }
+      .product-art { width: 68px; height: 68px; }
+      .notice-card { padding: 14px; font-size: 10px; }
+      .request-inner { width: min(100% - 30px, 1120px); padding: 62px 0; }
+      .form-card { padding: 18px; border-radius: 18px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field-full { grid-column: auto; }
+      .about-section { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
 </head>
-<body style="background:#034694;color:white;text-align:center;font-family:Arial;padding:40px 15px;">
-  <h1>CHELSEA STATION</h1>
-  <h2>FOR THE BLUES 💙</h2>
-  <p>Cửa hàng pre-order dành cho fan Chelsea.</p>
-  <p>Coming Soon!</p>
+<body>
+  <a class="skip-link" href="#main">Bỏ qua điều hướng, tới nội dung</a>
+  <div class="announcement">BẢN THỬ NGHIỆM V1 <span aria-hidden="true">•</span> DANH MỤC THĂM DÒ DÀNH CHO FAN CHELSEA</div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="Chelsea Station, về đầu trang">
+        <span class="brand-mark" aria-hidden="true">CS</span>
+        <span><span class="brand-name">CHELSEA STATION</span><span class="brand-sub">FAN PROJECT • V1</span></span>
+      </a>
+      <nav class="nav-links" aria-label="Điều hướng chính">
+        <a href="#bo-suu-tap">Bộ sưu tập</a>
+        <a href="#cach-hoat-dong">Cách hoạt động</a>
+      </nav>
+      <a class="nav-cta" href="#gui-yeu-cau">Gửi yêu cầu <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <div class="hero-copy-wrap">
+          <span class="eyebrow">Góc nhỏ cho người cùng màu áo</span>
+          <h1 id="hero-title">Chọn món đồ xanh <em>cho ngày bóng lăn.</em></h1>
+          <p class="hero-copy">Khám phá những ý tưởng phụ kiện và quà tặng dành cho fan Chelsea. Mày thích món nào, gửi yêu cầu quan tâm để góp ý trước khi có kế hoạch bán thật.</p>
+          <div class="hero-actions">
+            <a class="button" href="#bo-suu-tap">Xem bộ sưu tập <span aria-hidden="true">↓</span></a>
+            <a class="button button-quiet" href="#gui-yeu-cau">Gửi yêu cầu quan tâm</a>
+          </div>
+          <p class="hero-small">Đây là bản giới thiệu ý tưởng. Chưa có tồn kho, giá bán, thời gian giao hay cam kết cung ứng.</p>
+        </div>
+        <div class="hero-art" role="img" aria-label="Hình minh họa màu xanh, không phải hình sản phẩm thật">
+          <div class="art-orbit" aria-hidden="true"></div>
+          <div class="art-card" aria-hidden="true">
+            <span class="art-caption">FAN CONCEPT</span>
+            <div class="art-card-content"><div class="art-label">MATCHDAY • FAN EDITION</div><div class="art-title">MADE<br>FOR THE<br>FANS.</div></div>
+          </div>
+          <div class="floating-note"><strong>Chưa phải hàng bán</strong>Hình ảnh và sản phẩm đều là minh họa.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="proof-row" aria-label="Thông tin phiên bản">
+      <div class="proof-inner">
+        <div class="proof-item"><span class="proof-icon" aria-hidden="true">06</span><span class="proof-copy">Món demo<small>để tham khảo ý tưởng</small></span></div>
+        <div class="proof-item"><span class="proof-icon" aria-hidden="true">—</span><span class="proof-copy">Chưa có giá<small>đang thăm dò nhu cầu</small></span></div>
+        <div class="proof-item"><span class="proof-icon" aria-hidden="true">↗</span><span class="proof-copy">Không tự lưu<small>form chưa kết nối email</small></span></div>
+      </div>
+    </section>
+
+    <section class="section" id="bo-suu-tap" aria-labelledby="collection-title">
+      <div class="section-heading">
+        <span class="section-kicker">Ý tưởng dành cho fan</span>
+        <h2 id="collection-title">Bộ sưu tập thăm dò</h2>
+        <p class="section-intro">Mấy món dưới đây chỉ là ví dụ để xem gu của cộng đồng. Ảnh, chất liệu, mẫu mã và giá đều cần được xác nhận trước khi mở bán.</p>
+      </div>
+      <div class="filter-row" role="group" aria-label="Lọc sản phẩm theo danh mục">
+        <button class="filter-button" type="button" data-filter="all" aria-pressed="true">Tất cả</button>
+        <button class="filter-button" type="button" data-filter="fanwear" aria-pressed="false">Trang phục</button>
+        <button class="filter-button" type="button" data-filter="accessories" aria-pressed="false">Phụ kiện</button>
+        <button class="filter-button" type="button" data-filter="gifts" aria-pressed="false">Quà tặng</button>
+      </div>
+      <p class="product-count" id="product-count" aria-live="polite"></p>
+      <div class="product-grid" id="product-grid"></div>
+      <div class="notice-card">
+        <span class="notice-symbol" aria-hidden="true">ⓘ</span>
+        <div><strong>Thông tin quan trọng:</strong> Đây là danh mục pre-order thăm dò, chưa phải đơn đặt hàng. Chelsea Station chưa xác nhận nhà cung cấp, tồn kho, giá, bản quyền hay thời gian giao. Đừng thanh toán hoặc gửi thông tin thanh toán qua trang này.</div>
+      </div>
+    </section>
+
+    <section class="request-section" id="gui-yeu-cau" aria-labelledby="request-title">
+      <div class="request-inner">
+        <div class="request-layout">
+          <div class="request-copy">
+            <span class="eyebrow">Góp ý trước khi mở bán</span>
+            <h2 id="request-title">Mày đang quan tâm món nào?</h2>
+            <p class="section-intro">Điền thông tin để chuẩn bị một email yêu cầu. Trang này không có máy chủ và không tự lưu nội dung mày nhập.</p>
+            <ul class="request-points">
+              <li>Gửi yêu cầu chỉ thể hiện sự quan tâm, chưa tạo đơn hàng.</li>
+              <li>Chưa có giá, tồn kho hoặc thời gian giao được xác nhận.</li>
+              <li>Chỉ email được mở; mày tự kiểm tra rồi bấm Gửi trong ứng dụng email.</li>
+            </ul>
+          </div>
+          <form class="form-card" id="interest-form">
+            <h3>Yêu cầu quan tâm</h3>
+            <p class="form-lead">Thông tin được đưa vào email nháp trên thiết bị của mày nếu địa chỉ nhận đã được cấu hình.</p>
+            <div class="connection-status" id="connection-status" role="status">
+              <strong>Form chưa kết nối</strong>
+              Chưa gửi hay lưu thông tin. Người quản lý cần cấu hình email nhận trong mã trang trước khi dùng.
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="full-name">Tên của mày *</label>
+                <input id="full-name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="Ví dụ: Minh Anh" required>
+              </div>
+              <div class="field">
+                <label for="email">Email liên hệ *</label>
+                <input id="email" name="email" type="email" autocomplete="email" maxlength="120" placeholder="ten@email.com" required>
+              </div>
+              <div class="field field-full">
+                <label for="product-choice">Món mày quan tâm *</label>
+                <select id="product-choice" name="product" required>
+                  <option value="">Chọn một món</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="quantity">Số lượng dự kiến</label>
+                <select id="quantity" name="quantity">
+                  <option>1</option><option>2</option><option>3 trở lên</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="size">Cỡ / ghi chú tùy chọn</label>
+                <input id="size" name="size" type="text" maxlength="80" placeholder="Ví dụ: M, xanh đậm">
+              </div>
+            </div>
+            <label class="consent-row" for="understanding">
+              <input id="understanding" name="understanding" type="checkbox" required>
+              <span>Tao hiểu đây mới là yêu cầu quan tâm; chưa phải đơn hàng, chưa có giá hoặc cam kết cung ứng.</span>
+            </label>
+            <button class="button button-blue form-submit" type="submit">Tạo email yêu cầu <span aria-hidden="true">↗</span></button>
+            <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+            <p class="form-footnote">Không nhập số thẻ, mật khẩu, địa chỉ nhà hoặc thông tin thanh toán vào biểu mẫu này.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="cach-hoat-dong" aria-labelledby="about-title">
+      <div class="section-heading">
+        <span class="section-kicker">Minh bạch từ đầu</span>
+        <h2 id="about-title">Một dự án fan đang ở bước thử ý tưởng</h2>
+        <p class="section-intro">Chelsea Station đang tìm hiểu xem cộng đồng thích loại sản phẩm nào trước khi cân nhắc nguồn hàng và chi phí.</p>
+      </div>
+      <div class="about-section">
+        <article class="about-card">
+          <h3>Về Chelsea Station</h3>
+          <p>Chelsea Station là dự án độc lập dành cho cộng đồng cổ động viên. Trang này không đại diện, không được Chelsea FC hoặc tổ chức liên quan tài trợ hay xác nhận. Tên câu lạc bộ chỉ dùng để mô tả nhóm người hâm mộ mà dự án hướng tới.</p>
+        </article>
+        <article class="faq-card">
+          <h3>Đây đã là cửa hàng chưa?</h3>
+          <p>Chưa. Các thẻ sản phẩm là mẫu minh họa cho giai đoạn thăm dò. Hiện chưa xác nhận hàng thật, giá, nhà cung cấp, tồn kho hoặc thời điểm giao.</p>
+          <p>Nếu có sản phẩm được xác nhận sau này, trang cần cập nhật thông tin và cách đặt hàng rõ ràng trước khi nhận đơn hay thanh toán.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand">CHELSEA STATION</div>
+    <p class="footer-note">Dự án cộng đồng cổ động viên độc lập, không liên kết, tài trợ hoặc được xác nhận bởi Chelsea FC. Tên câu lạc bộ chỉ nhằm mô tả cộng đồng fan; trang không sử dụng huy hiệu hay logo chính thức.</p>
+    <div class="copyright">Bản thử nghiệm V1 • Chỉ dùng để thăm dò ý tưởng</div>
+  </footer>
+
+  <script>
+    const products = [
+      {
+        id: "ao-thun-matchday", name: "Áo thun Matchday", category: "fanwear", categoryLabel: "Trang phục",
+        description: "Ý tưởng áo thun xanh phong cách ngày xem bóng; mẫu và chất liệu chưa chốt.",
+        imageUrl: "", alt: "Minh họa ý tưởng áo thun xanh", art: "shirt"
+      },
+      {
+        id: "khan-co-dong", name: "Khăn quàng xanh", category: "accessories", categoryLabel: "Phụ kiện",
+        description: "Món phụ kiện mang theo khi tụ tập xem trận; chưa phải hàng có sẵn.",
+        imageUrl: "", alt: "Minh họa ý tưởng khăn quàng xanh", art: "scarf"
+      },
+      {
+        id: "tote-matchday", name: "Tote đi xem bóng", category: "accessories", categoryLabel: "Phụ kiện",
+        description: "Túi vải tiện dụng với ý tưởng đồ họa bóng đá tối giản.",
+        imageUrl: "", alt: "Minh họa ý tưởng túi vải", art: "bag"
+      },
+      {
+        id: "coc-ca-phe", name: "Cốc cà phê trước trận", category: "gifts", categoryLabel: "Quà tặng",
+        description: "Ý tưởng quà nhỏ cho buổi xem bóng; kiểu dáng và giá chưa xác nhận.",
+        imageUrl: "", alt: "Minh họa ý tưởng chiếc cốc", art: "mug"
+      },
+      {
+        id: "mu-xanh", name: "Mũ lưỡi trai xanh", category: "fanwear", categoryLabel: "Trang phục",
+        description: "Phác thảo phụ kiện thường ngày theo bảng màu xanh navy và xanh dương.",
+        imageUrl: "", alt: "Minh họa ý tưởng mũ xanh", art: "cap"
+      },
+      {
+        id: "huy-hieu-fan", name: "Huy hiệu cổ động", category: "gifts", categoryLabel: "Quà tặng",
+        description: "Ý tưởng huy hiệu fan tự thiết kế; không dùng huy hiệu câu lạc bộ.",
+        imageUrl: "", alt: "Minh họa ý tưởng huy hiệu fan tự thiết kế", art: "badge"
+      }
+    ];
+
+    const artwork = {
+      shirt: '<svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M32 19 43 14h14l11 5 19 12-10 17-11-7v43H34V41l-11 7-10-17 19-12Z" fill="#0753b8"/><path d="m42 15 8 10 8-10M35 40v44m30-44v44" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 54h12" stroke="#f3c969" stroke-width="3" stroke-linecap="round"/></svg>',
+      scarf: '<svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="m22 22 55 7-5 48-55-7 5-48Z" fill="#0753b8"/><path d="m22 22-5 12 8 1m47 41 8 2 2-12M29 34l41 5m-42 8 40 5m-41 8 40 5" stroke="#f3c969" stroke-width="4" stroke-linecap="round"/><path d="m15 75 11 2-1 8-11-2zm58 7 11 2-1 8-11-2z" fill="#1b73e8"/></svg>',
+      bag: '<svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M22 37h56l-5 48H27l-5-48Z" fill="#0753b8"/><path d="M35 40V29a15 15 0 0 1 30 0v11" stroke="#0d2344" stroke-width="6" stroke-linecap="round"/><path d="M39 57h22m-22 9h15" stroke="#f3c969" stroke-width="4" stroke-linecap="round"/></svg>',
+      mug: '<svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M22 29h48v45a9 9 0 0 1-9 9H31a9 9 0 0 1-9-9V29Z" fill="#0753b8"/><path d="M70 39h7a10 10 0 0 1 0 20h-7" stroke="#0753b8" stroke-width="7"/><path d="M35 17c-4-5 4-7 1-12m13 12c-4-5 4-7 1-12m13 12c-4-5 4-7 1-12" stroke="#1b73e8" stroke-width="3" stroke-linecap="round"/><path d="M33 49h25" stroke="#f3c969" stroke-width="4" stroke-linecap="round"/></svg>',
+      cap: '<svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M22 61c0-21 12-36 31-36 17 0 28 12 29 31L22 61Z" fill="#0753b8"/><path d="M23 60c14 10 45 11 67 0 2 11-16 20-39 20-18 0-30-7-28-20Z" fill="#0d2344"/><path d="M39 42c7-8 17-10 25-7m-24 29 16 1" stroke="#f3c969" stroke-width="4" stroke-linecap="round"/></svg>',
+      badge: '<svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 13 61 20l14 1 4 14 9 11-7 13-1 14-14 4-11 9-13-7-14-1-4-14-9-11 7-13 1-14 14-4 11-9Z" fill="#0753b8"/><circle cx="50" cy="48" r="20" stroke="#f3c969" stroke-width="4"/><path d="m40 54 8-15 12 17" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    };
+
+    const productGrid = document.getElementById("product-grid");
+    const countLabel = document.getElementById("product-count");
+    const productSelect = document.getElementById("product-choice");
+    const filters = Array.from(document.querySelectorAll("[data-filter]"));
+
+    function makeArtwork(product) {
+      const art = document.createElement("div");
+      art.className = "product-art";
+      art.setAttribute("role", "img");
+      art.setAttribute("aria-label", product.alt);
+      art.innerHTML = artwork[product.art];
+      return art;
+    }
+
+    function makeProductCard(product) {
+      const card = document.createElement("article");
+      card.className = "product-card";
+      const media = document.createElement("div");
+      media.className = "product-media";
+
+      if (product.imageUrl && product.imageUrl.trim()) {
+        const image = document.createElement("img");
+        image.src = product.imageUrl;
+        image.alt = product.alt;
+        image.loading = "lazy";
+        image.onerror = function () { this.replaceWith(makeArtwork(product)); };
+        media.append(image);
+      } else {
+        media.append(makeArtwork(product));
+      }
+
+      const ribbon = document.createElement("span");
+      ribbon.className = "demo-ribbon";
+      ribbon.textContent = "ẢNH MINH HỌA";
+      media.append(ribbon);
+
+      const body = document.createElement("div");
+      body.className = "product-body";
+      const category = document.createElement("div");
+      category.className = "product-category";
+      category.textContent = product.categoryLabel;
+      const title = document.createElement("h3");
+      title.textContent = product.name;
+      const description = document.createElement("p");
+      description.className = "product-description";
+      description.textContent = product.description;
+      const meta = document.createElement("div");
+      meta.className = "product-meta";
+      const price = document.createElement("span");
+      price.className = "price-note";
+      price.textContent = "Giá chưa xác nhận";
+      const action = document.createElement("button");
+      action.className = "interest-button";
+      action.type = "button";
+      action.textContent = "Quan tâm món này";
+      action.setAttribute("aria-label", "Chọn món " + product.name + " trong biểu mẫu");
+      action.addEventListener("click", function () {
+        productSelect.value = product.id;
+        document.getElementById("gui-yeu-cau").scrollIntoView({ behavior: "smooth" });
+        window.setTimeout(function () { document.getElementById("full-name").focus({ preventScroll: true }); }, 350);
+      });
+      meta.append(price, action);
+      body.append(category, title, description, meta);
+      card.append(media, body);
+      return card;
+    }
+
+    function renderProducts(filter) {
+      const visibleProducts = products.filter(function (product) {
+        return filter === "all" || product.category === filter;
+      });
+      productGrid.replaceChildren();
+      visibleProducts.forEach(function (product) { productGrid.append(makeProductCard(product)); });
+      countLabel.textContent = "Đang hiển thị " + visibleProducts.length + " món minh họa.";
+    }
+
+    products.forEach(function (product) {
+      const option = document.createElement("option");
+      option.value = product.id;
+      option.textContent = product.name + " — " + product.categoryLabel;
+      productSelect.append(option);
+    });
+
+    filters.forEach(function (button) {
+      button.addEventListener("click", function () {
+        filters.forEach(function (item) { item.setAttribute("aria-pressed", String(item === button)); });
+        renderProducts(button.dataset.filter);
+      });
+    });
+    renderProducts("all");
+
+    // CẤU HÌNH KHI SẴN SÀNG: điền email nhận thật giữa hai dấu ngoặc kép.
+    // Khi để trống, biểu mẫu sẽ báo rõ rằng chưa kết nối và không gửi/lưu dữ liệu.
+    const ORDER_EMAIL = "";
+    const form = document.getElementById("interest-form");
+    const formStatus = document.getElementById("form-status");
+    const connectionStatus = document.getElementById("connection-status");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      if (!ORDER_EMAIL || !ORDER_EMAIL.includes("@") || ORDER_EMAIL.includes("example")) {
+        formStatus.textContent = "Form chưa kết nối nên chưa gửi hay lưu thông tin. Người quản lý cần điền email nhận thật vào dòng ORDER_EMAIL ở cuối file trước.";
+        return;
+      }
+      const values = new FormData(form);
+      const subject = "Yêu cầu quan tâm — Chelsea Station V1";
+      const body = [
+        "Yêu cầu quan tâm (chưa phải đơn hàng)",
+        "Tên: " + values.get("name"),
+        "Email liên hệ: " + values.get("email"),
+        "Món quan tâm: " + productSelect.options[productSelect.selectedIndex].text,
+        "Số lượng dự kiến: " + values.get("quantity"),
+        "Cỡ / ghi chú: " + (values.get("size") || "Không ghi"),
+        "",
+        "Người gửi hiểu đây chưa phải đơn hàng và chưa có giá/cam kết cung ứng."
+      ].join("\n");
+      formStatus.textContent = "Đang mở ứng dụng email. Mày cần kiểm tra nội dung và tự bấm Gửi; website không tự lưu yêu cầu.";
+      window.location.href = "mailto:" + encodeURIComponent(ORDER_EMAIL) +
+        "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+    });
+
+    if (ORDER_EMAIL && ORDER_EMAIL.includes("@") && !ORDER_EMAIL.includes("example")) {
+      connectionStatus.innerHTML = "<strong>Đã cấu hình email nhận</strong>Khi gửi, ứng dụng email trên thiết bị sẽ mở bản nháp. Người gửi phải tự bấm Gửi; website không tự lưu.";
+    }
+  </script>
 </body>
 </html>
