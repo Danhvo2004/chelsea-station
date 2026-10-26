@@ -352,7 +352,7 @@
       <div class="proof-inner">
         <div class="proof-item"><span class="proof-icon" aria-hidden="true">06</span><span class="proof-copy">Món demo<small>để tham khảo ý tưởng</small></span></div>
         <div class="proof-item"><span class="proof-icon" aria-hidden="true">—</span><span class="proof-copy">Chưa có giá<small>đang thăm dò nhu cầu</small></span></div>
-        <div class="proof-item"><span class="proof-icon" aria-hidden="true">↗</span><span class="proof-copy">Không tự lưu<small>form chưa kết nối email</small></span></div>
+        <div class="proof-item"><span class="proof-icon" aria-hidden="true">↗</span><span class="proof-copy">Gửi qua form<small>Google Forms nhận phản hồi</small></span></div>
       </div>
     </section>
 
@@ -382,19 +382,19 @@
           <div class="request-copy">
             <span class="eyebrow">Góp ý trước khi mở bán</span>
             <h2 id="request-title">Mày đang quan tâm món nào?</h2>
-            <p class="section-intro">Điền thông tin để chuẩn bị một email yêu cầu. Trang này không có máy chủ và không tự lưu nội dung mày nhập.</p>
+            <p class="section-intro">Điền thông tin để chuyển sang Google Forms. Thông tin chưa được gửi cho tới khi mày kiểm tra và bấm Gửi ở biểu mẫu tiếp theo.</p>
             <ul class="request-points">
               <li>Gửi yêu cầu chỉ thể hiện sự quan tâm, chưa tạo đơn hàng.</li>
               <li>Chưa có giá, tồn kho hoặc thời gian giao được xác nhận.</li>
-              <li>Chỉ email được mở; mày tự kiểm tra rồi bấm Gửi trong ứng dụng email.</li>
+              <li>Mày kiểm tra lại thông tin và tự bấm Gửi trong Google Forms.</li>
             </ul>
           </div>
           <form class="form-card" id="interest-form">
             <h3>Yêu cầu quan tâm</h3>
-            <p class="form-lead">Thông tin được đưa vào email nháp trên thiết bị của mày nếu địa chỉ nhận đã được cấu hình.</p>
+            <p class="form-lead">Khi tiếp tục, tên, email, món, số lượng và ghi chú sẽ được điền sẵn vào Google Forms để mày kiểm tra.</p>
             <div class="connection-status" id="connection-status" role="status">
-              <strong>Form chưa kết nối</strong>
-              Chưa gửi hay lưu thông tin. Người quản lý cần cấu hình email nhận trong mã trang trước khi dùng.
+              <strong>Đã kết nối Google Forms</strong>
+              Chỉ khi mày bấm tiếp tục, thông tin mới được chuyển sang biểu mẫu Google. Tại đó mày tự xác nhận và bấm Gửi.
             </div>
             <div class="form-grid">
               <div class="field">
@@ -424,9 +424,9 @@
             </div>
             <label class="consent-row" for="understanding">
               <input id="understanding" name="understanding" type="checkbox" required>
-              <span>Tao hiểu đây mới là yêu cầu quan tâm; chưa phải đơn hàng, chưa có giá hoặc cam kết cung ứng.</span>
+              <span>Tao hiểu đây chỉ là yêu cầu quan tâm, chưa phải đơn hàng. Khi tiếp tục, thông tin tao nhập sẽ được chuyển sang Google Forms; giá và khả năng cung ứng chưa xác nhận.</span>
             </label>
-            <button class="button button-blue form-submit" type="submit">Tạo email yêu cầu <span aria-hidden="true">↗</span></button>
+            <button class="button button-blue form-submit" type="submit">Tiếp tục tới biểu mẫu <span aria-hidden="true">↗</span></button>
             <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
             <p class="form-footnote">Không nhập số thẻ, mật khẩu, địa chỉ nhà hoặc thông tin thanh toán vào biểu mẫu này.</p>
           </form>
@@ -594,39 +594,23 @@
     });
     renderProducts("all");
 
-    // CẤU HÌNH KHI SẴN SÀNG: điền email nhận thật giữa hai dấu ngoặc kép.
-    // Khi để trống, biểu mẫu sẽ báo rõ rằng chưa kết nối và không gửi/lưu dữ liệu.
-    const ORDER_EMAIL = "chelseastation26@gmail.com.";
+    const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSebS9Fpa0OZJtA-ryvt4QjH0KDlsO-usYUxc6KOUIha9IdBvQ/viewform";
     const form = document.getElementById("interest-form");
     const formStatus = document.getElementById("form-status");
-    const connectionStatus = document.getElementById("connection-status");
 
     form.addEventListener("submit", function (event) {
       event.preventDefault();
-      if (!ORDER_EMAIL || !ORDER_EMAIL.includes("@") || ORDER_EMAIL.includes("example")) {
-        formStatus.textContent = "Form chưa kết nối nên chưa gửi hay lưu thông tin. Người quản lý cần điền email nhận thật vào dòng ORDER_EMAIL ở cuối file trước.";
-        return;
-      }
       const values = new FormData(form);
-      const subject = "Yêu cầu quan tâm — Chelsea Station V1";
-      const body = [
-        "Yêu cầu quan tâm (chưa phải đơn hàng)",
-        "Tên: " + values.get("name"),
-        "Email liên hệ: " + values.get("email"),
-        "Món quan tâm: " + productSelect.options[productSelect.selectedIndex].text,
-        "Số lượng dự kiến: " + values.get("quantity"),
-        "Cỡ / ghi chú: " + (values.get("size") || "Không ghi"),
-        "",
-        "Người gửi hiểu đây chưa phải đơn hàng và chưa có giá/cam kết cung ứng."
-      ].join("\n");
-      formStatus.textContent = "Đang mở ứng dụng email. Mày cần kiểm tra nội dung và tự bấm Gửi; website không tự lưu yêu cầu.";
-      window.location.href = "mailto:" + ORDER_EMAIL +
-        "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      const selectedProduct = products.find(function (product) { return product.id === productSelect.value; });
+      const formUrl = new URL(GOOGLE_FORM_URL);
+      formUrl.searchParams.set("entry.662146058", String(values.get("name") || ""));
+      formUrl.searchParams.set("entry.2010876189", String(values.get("email") || ""));
+      formUrl.searchParams.set("entry.529494653", selectedProduct ? selectedProduct.name : "");
+      formUrl.searchParams.set("entry.1890173049", String(values.get("quantity") || "1"));
+      formUrl.searchParams.set("entry.305851301", String(values.get("size") || ""));
+      formStatus.textContent = "Đang mở Google Forms. Mày kiểm tra thông tin, chọn ô xác nhận rồi tự bấm Gửi; yêu cầu chưa được gửi cho tới lúc đó.";
+      window.location.href = formUrl.toString();
     });
-
-    if (ORDER_EMAIL && ORDER_EMAIL.includes("@") && !ORDER_EMAIL.includes("example")) {
-      connectionStatus.innerHTML = "<strong>Đã cấu hình email nhận</strong>Khi gửi, ứng dụng email trên thiết bị sẽ mở bản nháp. Người gửi phải tự bấm Gửi; website không tự lưu.";
-    }
   </script>
 </body>
 </html>
